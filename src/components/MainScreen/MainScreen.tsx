@@ -1,15 +1,62 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import NavMainScreen from './NavMainScreen'
 import { Link } from 'react-router-dom'
 import styles from './MainScreen.module.css'
 import IITBlogo from '../../assets/a6371bb1bc5c10af6705a1160e2316543b265585.png'
 import ProfileButton from '../../assets/3ca8ab14a39dc09cb18dd60e3cae4e2429071635.png'
 import EventCardMain from '../MainScreen/EventCardsMain'
-import { MOCK_EVENTS } from '../MainScreen/MockData'
+import type { EventData } from '../EventsPage/types'
+import { fetchEventsHelper } from '../../helpers/getEvents'
 
 const MainScreen = () => {
     const [inputValue, setInputValue] = useState('')
     const [_searchTerm, setSearchTerm] = useState('')
+    const username = localStorage.getItem('username') || 'User'
+    const [upcomingEvents, setUpcomingEvents] = useState<EventData[]>([])
+    const [pastEvents, setPastEvents] = useState<EventData[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                await fetchEventsHelper(true).then((events) => {
+                    console.log(events)
+                    setUpcomingEvents(events.slice(0, 3))
+                })
+                await fetchEventsHelper(false).then((events) => {
+                    setPastEvents(events.slice(0, 3))
+                })
+            } catch (_error) {
+                setError('Could not load events')
+            } finally {
+                console.log(upcomingEvents, pastEvents)
+                setLoading(false)
+            }
+        }
+
+        fetchEvents()
+    }, [])
+
+    if (loading) {
+        return (
+            <p className="text-center mt-5 text-light fs-4">
+                Loading events...
+            </p>
+        )
+    }
+
+    if (error) {
+        return <p className="text-center mt-5 text-danger fs-4">{error}</p>
+    }
+
+    if (upcomingEvents.length === 0 && pastEvents.length === 0) {
+        return (
+            <p className="text-center mt-5 text-light fs-4">
+                No current events available.
+            </p>
+        )
+    }
 
     return (
         <div
@@ -45,8 +92,7 @@ const MainScreen = () => {
                     left: '1265px',
                 }}
             >
-                <Link
-                    to="/profile"
+                <div
                     className="d-flex align-items-center justify-content-center gap-2"
                     style={{
                         display: 'flex',
@@ -75,12 +121,12 @@ const MainScreen = () => {
                             }}
                         >
                             <br />
-                            Om Kedare
+                            {username}
                         </span>
                     </div>
-                </Link>
+                </div>
             </div>
-            <div
+            {/* <div
                 className="mb-2"
                 style={{
                     position: 'absolute',
@@ -123,7 +169,7 @@ const MainScreen = () => {
                 >
                     Search
                 </button>
-            </div>
+            </div> */}
 
             <div className="mt-4">
                 <div className="d-flex align-items-center justify-content-center gap-3">
@@ -255,7 +301,7 @@ const MainScreen = () => {
                     borderColor: 'black',
                 }}
             >
-                <EventCardMain event={MOCK_EVENTS[0]} />
+                <EventCardMain event={upcomingEvents[0]} />
             </div>
             <div
                 className="card"
@@ -267,7 +313,7 @@ const MainScreen = () => {
                     borderColor: 'black',
                 }}
             >
-                <EventCardMain event={MOCK_EVENTS[1]} />
+                <EventCardMain event={upcomingEvents[1]} />
             </div>
             <div
                 className="card"
@@ -279,7 +325,7 @@ const MainScreen = () => {
                     borderColor: 'black',
                 }}
             >
-                <EventCardMain event={MOCK_EVENTS[2]} />
+                <EventCardMain event={upcomingEvents[2]} />
             </div>
             <div
                 style={{
@@ -326,7 +372,7 @@ const MainScreen = () => {
                     borderColor: 'black',
                 }}
             >
-                <EventCardMain event={MOCK_EVENTS[3]} />
+                <EventCardMain event={pastEvents[0]} />
             </div>
             <div
                 className="card"
@@ -338,7 +384,7 @@ const MainScreen = () => {
                     borderColor: 'black',
                 }}
             >
-                <EventCardMain event={MOCK_EVENTS[4]} />
+                <EventCardMain event={pastEvents[1]} />
             </div>
             <div
                 className="card"
@@ -350,7 +396,7 @@ const MainScreen = () => {
                     borderColor: 'black',
                 }}
             >
-                <EventCardMain event={MOCK_EVENTS[5]} />
+                <EventCardMain event={pastEvents[2]} />
             </div>
             <div
                 className="d-flex gap-3"

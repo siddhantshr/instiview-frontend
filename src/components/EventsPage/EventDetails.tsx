@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import type { EventData } from './types'
 import BlueTickIcon from '../../assets/bluetick.svg'
+import { postRatingHelper } from '../../helpers/postRating'
 
 interface EventDetailProps {
     event: EventData
@@ -20,6 +21,27 @@ const EventDetail = ({ event, isCurrent }: EventDetailProps) => {
     const [isAttended, setIsAttended] = useState(false)
     const [userRating, setUserRating] = useState(0)
     const [hoverRating, setHoverRating] = useState(0)
+    const [successfullyRated, setSuccessfullyRated] = useState(false)
+
+    useEffect(() => {
+        const postRating = async () => {
+            try {
+                const resp = await postRatingHelper(event.id, userRating)
+                if (resp) {
+                    setSuccessfullyRated(true)
+                } else {
+                    setSuccessfullyRated(false)
+                }
+            } catch (error) {
+                console.error('Error posting rating:', error)
+                setSuccessfullyRated(false)
+            }
+        }
+
+        if (userRating > 0) {
+            postRating()
+        }
+    }, [userRating])
 
     return (
         <div
@@ -188,15 +210,6 @@ const EventDetail = ({ event, isCurrent }: EventDetailProps) => {
                                         ({event.rating}/5)
                                     </span>
                                 </div>
-                                <span
-                                    className=""
-                                    style={{
-                                        fontSize: '16px',
-                                        color: '#EDEEF3',
-                                    }}
-                                >
-                                    {event.reviewCount} Ratings
-                                </span>
                             </div>
                         </div>
 
@@ -259,8 +272,7 @@ const EventDetail = ({ event, isCurrent }: EventDetailProps) => {
                                 className="text-center mt-2 d-block"
                                 style={{ fontSize: '10px', color: '#B2B6C7' }}
                             >
-                                Your Response will be added to the average of
-                                All Ratings
+                                {successfullyRated ? 'Thank you for rating!' : 'You have already rated this event.'}
                             </small>
                         </div>
                     </div>

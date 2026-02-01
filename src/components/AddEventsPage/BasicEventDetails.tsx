@@ -1,28 +1,19 @@
-import { useState } from 'react'
-import type { EventFormData } from './types'
 import type { ChangeEvent } from 'react'
 
-const BasicEventDetails = () => {
-    const [formData, setFormData] = useState<EventFormData>({
-        title: '',
-        description: '',
-        location: '',
-        date: '',
-        time: '',
-        organizer: '',
-        contactName: '',
-        contactEmail: '',
-        allowRatings: false,
-        makePublic: false,
-        image: null,
-        imagePreviewUrl: '',
-    })
-    const handleChange = (
-        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
-        const { name, value } = e.target
-        setFormData((prev) => ({ ...prev, [name]: value }))
-    }
+type Props = {
+    title: string
+    description: string
+    setTitle: (val: string) => void
+    setDescription: (val: string) => void
+    // later we can add image setter here too
+}
+
+const BasicEventDetails = ({
+    title,
+    description,
+    setTitle,
+    setDescription,
+}: Props) => {
     const headingStyle = { color: '#EDEEF3', fontSize: '32px' }
     const subHeadingStyle = { color: '#FFFFFF', fontSize: '16px' }
     const inputBoxStyle = {
@@ -38,6 +29,15 @@ const BasicEventDetails = () => {
         boxShadow: 'none',
         outline: 'none',
     }
+
+    function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
+        setTitle(e.target.value)
+    }
+
+    function handleDescriptionChange(e: ChangeEvent<HTMLTextAreaElement>) {
+        setDescription(e.target.value)
+    }
+
     return (
         <div className="mb-2 position-relative">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -45,7 +45,7 @@ const BasicEventDetails = () => {
                     Basic event details
                 </p>
                 <button
-                    // onClick={() => } Have to add this click
+                    type="button"
                     className="btn"
                     style={{
                         width: '162px',
@@ -60,6 +60,7 @@ const BasicEventDetails = () => {
                     Add event Image +
                 </button>
             </div>
+
             <div className="mb-3">
                 <label className="form-label small" style={subHeadingStyle}>
                     Enter event title
@@ -69,11 +70,12 @@ const BasicEventDetails = () => {
                     name="title"
                     className="placeholder form-control"
                     placeholder="Enter event title..."
-                    value={formData.title}
-                    onChange={handleChange}
+                    value={title}
+                    onChange={handleTitleChange}
                     style={{ ...inputBoxStyle, height: '48px' }}
                 />
             </div>
+
             <div className="mb-3">
                 <label className="form-label small" style={subHeadingStyle}>
                     Short Description
@@ -83,8 +85,8 @@ const BasicEventDetails = () => {
                     className="form-control placeholder"
                     rows={3}
                     placeholder="A brief summary shown on the event card..."
-                    value={formData.description}
-                    onChange={handleChange}
+                    value={description}
+                    onChange={handleDescriptionChange}
                     maxLength={150}
                     style={{
                         ...inputBoxStyle,
@@ -95,7 +97,7 @@ const BasicEventDetails = () => {
                     className="text-end"
                     style={{ color: '#7C8194', fontSize: '16px' }}
                 >
-                    {formData.description.length}/150
+                    {description.length}/150
                 </div>
             </div>
         </div>
@@ -103,3 +105,5 @@ const BasicEventDetails = () => {
 }
 
 export default BasicEventDetails
+
+

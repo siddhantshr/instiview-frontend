@@ -7,5 +7,5 @@ export const setNavigate = (nav: NavigateFunction) => {
 }
 
 export const redirectToLogin = () => {
-    navigate?.('/login', { replace: true })
+    navigate?.('/', { replace: true })
 }

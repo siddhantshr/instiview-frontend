@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import type { EventFormData } from './types'
 import type { ChangeEvent } from 'react'
 
 const headingStyle = { color: '#EDEEF3', fontSize: '32px' }
@@ -18,62 +16,68 @@ const inputBoxStyle = {
     outline: 'none',
 }
 
-const EventMetaInformation = () => {
-    const [formData, setFormData] = useState<EventFormData>({
-        title: '',
-        description: '',
-        location: '',
-        date: '',
-        time: '',
-        organizer: '',
-        contactName: '',
-        contactEmail: '',
-        allowRatings: false,
-        makePublic: false,
-        image: null,
-        imagePreviewUrl: '',
-    })
-    const handleChange = (
-        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
-        const { name, value } = e.target
-        setFormData((prev) => ({ ...prev, [name]: value }))
+type Props = {
+    location: string
+    date: string
+    time: string
+    setLocation: (val: string) => void
+    setDate: (val: string) => void
+    setTime: (val: string) => void
+}
+
+const EventMetaInformation = ({
+    location,
+    date,
+    time,
+    setLocation,
+    setDate,
+    setTime,
+}: Props) => {
+    function handleLocationChange(e: ChangeEvent<HTMLInputElement>) {
+        setLocation(e.target.value)
+    }
+
+    function handleDateChange(e: ChangeEvent<HTMLInputElement>) {
+        setDate(e.target.value)
+    }
+
+    function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
+        setTime(e.target.value)
     }
 
     return (
         <div className="mb-5">
             <style>
                 {`
-            .placeholder::placeholder {
-              color: white !important;
+                .placeholder::placeholder {
+                    color: white !important;
                 }
-         `}
+                `}
             </style>
+
             <div className="mb-3">
                 <p className="fw-medium" style={headingStyle}>
                     Event Meta Information
                 </p>
+
                 <div className="row g-3" style={{ maxWidth: '90%' }}>
                     <Info
                         icon="bi-geo-alt"
                         label="Location"
-                        name="location"
-                        formData={formData}
-                        handleChange={handleChange}
+                        value={location}
+                        onChange={handleLocationChange}
                     />
                     <Info
                         icon="bi-calendar-event"
-                        label="Date"
-                        name="date"
-                        formData={formData}
-                        handleChange={handleChange}
+                        label="Date (YYYY-MM-DD)"
+                        value={date}
+                        onChange={handleDateChange}
                     />
                     <Info
                         icon="bi-clock"
-                        label="Time"
-                        name="time"
-                        formData={formData}
-                        handleChange={handleChange}
+                        label="Time (HH:MM in 24-hour format)"
+                        value={time}
+                        onChange={handleTimeChange}
                     />
                 </div>
             </div>
@@ -84,15 +88,13 @@ const EventMetaInformation = () => {
 const Info = ({
     icon,
     label,
-    name,
-    formData,
-    handleChange,
+    value,
+    onChange,
 }: {
     icon: string
     label: string
-    name: string
-    formData: EventFormData
-    handleChange: (_e: ChangeEvent<HTMLInputElement>) => void
+    value: string
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void
 }) => (
     <div className="col-md-4">
         <label className="form-label" style={subHeadingStyle}>
@@ -109,13 +111,13 @@ const Info = ({
             >
                 <i className={`bi ${icon} text-info me-1`}></i>
             </span>
+
             <input
                 type="text"
-                name={name}
                 className="placeholder form-control bg-transparent border-start-0"
                 placeholder={`${label}...`}
-                value={formData[name as keyof EventFormData] as string}
-                onChange={handleChange}
+                value={value}
+                onChange={onChange}
                 style={{
                     ...inputBoxStyle,
                     borderBottomLeftRadius: 0,
@@ -127,3 +129,4 @@ const Info = ({
 )
 
 export default EventMetaInformation
+

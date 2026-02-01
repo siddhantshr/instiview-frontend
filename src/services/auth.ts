@@ -22,34 +22,38 @@ export const login = async (email: string, password: string) => {
     }
 
     const data = await response.json()
-    setTokens(data.accessToken, data.refreshToken)
-}
-
-export const refreshAccessToken = async () => {
-    const refreshToken = getRefreshToken()
-    if (!refreshToken) {
-        throw new Error('No refresh token available')
-    }
-
-    const response = await fetch(`${API_URL}auth/refresh`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken }),
-    })
-
-    if (!response.ok) {
-        clearTokens()
-        redirectToLogin()
-        throw new Error('Refresh token expired')
-    }
-
-    const data = await response.json()
-    setAccessToken(data.accessToken)
-    return data.accessToken
+    setTokens(data.accessToken, data.refreshToken, data.username)
 }
 
 export const logout = () => {
     clearTokens()
+    redirectToLogin()
+}
+
+
+export const refreshAccessToken = async () => {
+    const refreshToken = getRefreshToken()
+    console.log('Refreshing access token')
+    if (!refreshToken) {
+        logout()
+        throw new Error('No refresh token available')
+    }
+
+    const response = await fetch(`${API_URL}token/refresh/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 'refresh': refreshToken }),
+    })
+
+
+    if (!response.ok) {
+        logout()
+        throw new Error('Refresh token expired')
+    }
+
+    const data = await response.json()
+    setAccessToken(data.access)
+    return data.access
 }

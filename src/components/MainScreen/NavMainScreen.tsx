@@ -42,23 +42,23 @@ const NavMainScreen = () => {
                                 <a
                                     className="nav-link active"
                                     aria-current="page"
-                                    href="#"
+                                    href="/mainscreen"
                                 >
                                     Home
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">
+                                <a className="nav-link" href="/addevents">
                                     Add Event
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">
+                                <a className="nav-link" href="/aboutus">
                                     FAQ
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">
+                                <a className="nav-link" href="/eventspagecurrent">
                                     Rate Events
                                 </a>
                             </li>

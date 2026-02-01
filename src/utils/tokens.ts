@@ -9,9 +9,10 @@ export const getRefreshToken = () => {
     return localStorage.getItem(REFRESH_TOKEN_KEY)
 }
 
-export const setTokens = (access: string, refresh: string) => {
+export const setTokens = (access: string, refresh: string, username: string) => {
     localStorage.setItem(ACCESS_TOKEN_KEY, access)
     localStorage.setItem(REFRESH_TOKEN_KEY, refresh)
+    localStorage.setItem('username', username)
 }
 
 export const setAccessToken = (access: string) => {
@@ -21,4 +22,5 @@ export const setAccessToken = (access: string) => {
 export const clearTokens = () => {
     localStorage.removeItem(ACCESS_TOKEN_KEY)
     localStorage.removeItem(REFRESH_TOKEN_KEY)
+    localStorage.removeItem('username')
 }

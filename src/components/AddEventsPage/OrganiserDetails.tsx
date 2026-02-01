@@ -1,23 +1,30 @@
-import { useState } from 'react'
-import type { EventFormData } from './types'
 import type { ChangeEvent } from 'react'
 
-const OrganiserDetails = () => {
-    const [formData, setFormData] = useState<EventFormData>({
-        title: '',
-        description: '',
-        location: '',
-        date: '',
-        time: '',
-        organizer: '',
-        contactName: '',
-        contactEmail: '',
-        allowRatings: false,
-        makePublic: false,
-        image: null,
-        imagePreviewUrl: '',
-    })
+type Props = {
+    organizer: string
+    contactName: string
+    contactEmail: string
+    allowRatings: boolean
+    makePublic: boolean
+    setOrganizer: (val: string) => void
+    setContactName: (val: string) => void
+    setContactEmail: (val: string) => void
+    setAllowRatings: (val: boolean) => void
+    setMakePublic: (val: boolean) => void
+}
 
+const OrganiserDetails = ({
+    organizer,
+    contactName,
+    contactEmail,
+    allowRatings,
+    makePublic,
+    setOrganizer,
+    setContactName,
+    setContactEmail,
+    setAllowRatings,
+    setMakePublic,
+}: Props) => {
     const headingStyle = { color: '#EDEEF3', fontSize: '32px' }
     const subHeadingStyle = { color: '#FFFFFF', fontSize: '16px' }
     const inputBoxStyle = {
@@ -34,14 +41,24 @@ const OrganiserDetails = () => {
         outline: 'none',
     }
 
-    const handleChange = (
-        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
-        const { name, value, type } = e.target
-        const finalValue =
-            type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    function handleOrganizerChange(e: ChangeEvent<HTMLInputElement>) {
+        setOrganizer(e.target.value)
+    }
 
-        setFormData((prev) => ({ ...prev, [name]: finalValue }))
+    function handleContactNameChange(e: ChangeEvent<HTMLInputElement>) {
+        setContactName(e.target.value)
+    }
+
+    function handleContactEmailChange(e: ChangeEvent<HTMLInputElement>) {
+        setContactEmail(e.target.value)
+    }
+
+    function handleAllowRatingsChange(e: ChangeEvent<HTMLInputElement>) {
+        setAllowRatings(e.target.checked)
+    }
+
+    function handleMakePublicChange(e: ChangeEvent<HTMLInputElement>) {
+        setMakePublic(e.target.checked)
     }
 
     return (
@@ -50,59 +67,50 @@ const OrganiserDetails = () => {
                 <p className="fw-medium" style={headingStyle}>
                     Organiser Details
                 </p>
+
                 <div className="col-md" style={{ maxWidth: '30%' }}>
                     <div className="mb-3">
-                        <label
-                            className="form-label small"
-                            style={subHeadingStyle}
-                        >
+                        <label className="form-label small" style={subHeadingStyle}>
                             Organising Body/Person
                         </label>
                         <input
                             type="text"
-                            name="organizer"
                             className="form-control placeholder"
                             placeholder="Enter"
-                            value={formData.organizer}
-                            onChange={handleChange}
+                            value={organizer}
+                            onChange={handleOrganizerChange}
                             style={{ ...inputBoxStyle, height: '48px' }}
                         />
-                        <div
-                            className="form-text"
-                            style={{ fontSize: '10px', color: '#7C8194' }}
-                        >
+                        <div className="form-text" style={{ fontSize: '10px', color: '#7C8194' }}>
                             You are logged in as Om Kedare
                         </div>
                     </div>
                 </div>
+
                 <div className="col-md" style={{ maxWidth: '40%' }}>
                     <div className="mb-3">
-                        <label
-                            className="form-label small"
-                            style={subHeadingStyle}
-                        >
+                        <label className="form-label small" style={subHeadingStyle}>
                             Contact Person
                         </label>
                         <input
                             type="text"
-                            name="contactName"
                             className="form-control placeholder mb-3"
                             placeholder="Name"
-                            value={formData.contactName}
-                            onChange={handleChange}
+                            value={contactName}
+                            onChange={handleContactNameChange}
                             style={{ ...inputBoxStyle, height: '48px' }}
                         />
                         <input
                             type="text"
-                            name="contactEmail"
                             className="form-control placeholder"
                             placeholder="Email Address"
-                            value={formData.contactEmail}
-                            onChange={handleChange}
+                            value={contactEmail}
+                            onChange={handleContactEmailChange}
                             style={{ ...inputBoxStyle, height: '48px' }}
                         />
                     </div>
                 </div>
+
                 <div className="col-md" style={{ maxWidth: '18%' }}>
                     <div
                         className="d-flex flex-column justify-content-center"
@@ -115,10 +123,7 @@ const OrganiserDetails = () => {
                             padding: '24px',
                         }}
                     >
-                        <p
-                            className="fw-medium mb-3"
-                            style={{ color: '#EDEEF3', fontSize: '24px' }}
-                        >
+                        <p className="fw-medium mb-3" style={{ color: '#EDEEF3', fontSize: '24px' }}>
                             Visibility
                         </p>
 
@@ -126,10 +131,9 @@ const OrganiserDetails = () => {
                             <input
                                 className="form-check-input"
                                 type="checkbox"
-                                name="allowRatings"
                                 id="allowRatings"
-                                checked={formData.allowRatings}
-                                onChange={handleChange}
+                                checked={allowRatings}
+                                onChange={handleAllowRatingsChange}
                             />
                             <label
                                 className="form-check-label"
@@ -148,10 +152,9 @@ const OrganiserDetails = () => {
                             <input
                                 className="form-check-input"
                                 type="checkbox"
-                                name="makePublic"
                                 id="makePublic"
-                                checked={formData.makePublic}
-                                onChange={handleChange}
+                                checked={makePublic}
+                                onChange={handleMakePublicChange}
                             />
                             <label
                                 className="form-check-label"
