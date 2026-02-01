@@ -128,7 +128,7 @@ const EventsHeader = ({ upcoming }: { upcoming: boolean }) => {
             {/* Home */}
             <div style={{ paddingLeft: '100px', paddingRight: '20px' }}>
                 <Link
-                    to="/"
+                    to="/mainscreen"
                     className="text-white-50 text-decoration-none small hover-white "
                 >
                     <i className="bi bi-chevron-left me-1"></i> Back to HOME
