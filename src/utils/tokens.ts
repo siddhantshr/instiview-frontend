@@ -9,7 +9,11 @@ export const getRefreshToken = () => {
     return localStorage.getItem(REFRESH_TOKEN_KEY)
 }
 
-export const setTokens = (access: string, refresh: string, username: string) => {
+export const setTokens = (
+    access: string,
+    refresh: string,
+    username: string,
+) => {
     localStorage.setItem(ACCESS_TOKEN_KEY, access)
     localStorage.setItem(REFRESH_TOKEN_KEY, refresh)
     localStorage.setItem('username', username)

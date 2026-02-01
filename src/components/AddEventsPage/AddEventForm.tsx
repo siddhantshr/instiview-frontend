@@ -27,7 +27,7 @@ const AddEventForm = () => {
 
     const toISTIso = (date: string, time: string): string => {
         if (!date || !time) {
-            throw new Error("Invalid date or time")
+            throw new Error('Invalid date or time')
         }
 
         return `${date}T${time}:00+05:30`
@@ -51,7 +51,11 @@ const AddEventForm = () => {
             return
         }
 
-        if (location.trim() === '' || date.trim() === '' || time.trim() === '') {
+        if (
+            location.trim() === '' ||
+            date.trim() === '' ||
+            time.trim() === ''
+        ) {
             setMessage('Please fill location, date and time')
             return
         }
@@ -60,7 +64,7 @@ const AddEventForm = () => {
 
         try {
             startTimeISO = toISTIso(date, time)
-        } catch (e) {
+        } catch (_e) {
             setMessage('Invalid date/time format')
             return
         }
@@ -76,7 +80,9 @@ const AddEventForm = () => {
                     content: description,
                     location: location,
                     startTime: startTimeISO,
-                    imageURL: imageURL || "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
+                    imageURL:
+                        imageURL ||
+                        'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
                 }),
             })
 
@@ -106,9 +112,11 @@ const AddEventForm = () => {
 
             // redirect after a short delay so user sees the success message
             setTimeout(() => {
-                getNowIST() > buildISTDate(startTimeISO) ? navigate('/eventspagepast') : navigate('/eventspagecurrent')
+                getNowIST() > buildISTDate(startTimeISO)
+                    ? navigate('/eventspagepast')
+                    : navigate('/eventspagecurrent')
             }, 800)
-        } catch (e) {
+        } catch (_e) {
             setMessage('Could not add event')
         }
 

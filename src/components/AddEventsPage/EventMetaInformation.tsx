@@ -20,9 +20,9 @@ type Props = {
     location: string
     date: string
     time: string
-    setLocation: (val: string) => void
-    setDate: (val: string) => void
-    setTime: (val: string) => void
+    setLocation: (_val: string) => void
+    setDate: (_val: string) => void
+    setTime: (_val: string) => void
 }
 
 const EventMetaInformation = ({
@@ -94,7 +94,7 @@ const Info = ({
     icon: string
     label: string
     value: string
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void
+    onChange: (_e: ChangeEvent<HTMLInputElement>) => void
 }) => (
     <div className="col-md-4">
         <label className="form-label" style={subHeadingStyle}>
@@ -129,4 +129,3 @@ const Info = ({
 )
 
 export default EventMetaInformation
-

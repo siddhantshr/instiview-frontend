@@ -272,7 +272,9 @@ const EventDetail = ({ event, isCurrent }: EventDetailProps) => {
                                 className="text-center mt-2 d-block"
                                 style={{ fontSize: '10px', color: '#B2B6C7' }}
                             >
-                                {successfullyRated ? 'Thank you for rating!' : 'You have already rated this event.'}
+                                {successfullyRated
+                                    ? 'Thank you for rating!'
+                                    : 'You have already rated this event.'}
                             </small>
                         </div>
                     </div>

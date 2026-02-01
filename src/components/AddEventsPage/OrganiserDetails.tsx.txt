@@ -70,7 +70,10 @@ const OrganiserDetails = ({
 
                 <div className="col-md" style={{ maxWidth: '30%' }}>
                     <div className="mb-3">
-                        <label className="form-label small" style={subHeadingStyle}>
+                        <label
+                            className="form-label small"
+                            style={subHeadingStyle}
+                        >
                             Organising Body/Person
                         </label>
                         <input
@@ -81,7 +84,10 @@ const OrganiserDetails = ({
                             onChange={handleOrganizerChange}
                             style={{ ...inputBoxStyle, height: '48px' }}
                         />
-                        <div className="form-text" style={{ fontSize: '10px', color: '#7C8194' }}>
+                        <div
+                            className="form-text"
+                            style={{ fontSize: '10px', color: '#7C8194' }}
+                        >
                             You are logged in as Om Kedare
                         </div>
                     </div>
@@ -89,7 +95,10 @@ const OrganiserDetails = ({
 
                 <div className="col-md" style={{ maxWidth: '40%' }}>
                     <div className="mb-3">
-                        <label className="form-label small" style={subHeadingStyle}>
+                        <label
+                            className="form-label small"
+                            style={subHeadingStyle}
+                        >
                             Contact Person
                         </label>
                         <input
@@ -123,7 +132,10 @@ const OrganiserDetails = ({
                             padding: '24px',
                         }}
                     >
-                        <p className="fw-medium mb-3" style={{ color: '#EDEEF3', fontSize: '24px' }}>
+                        <p
+                            className="fw-medium mb-3"
+                            style={{ color: '#EDEEF3', fontSize: '24px' }}
+                        >
                             Visibility
                         </p>
 

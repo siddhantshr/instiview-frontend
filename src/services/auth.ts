@@ -30,10 +30,8 @@ export const logout = () => {
     redirectToLogin()
 }
 
-
 export const refreshAccessToken = async () => {
     const refreshToken = getRefreshToken()
-    console.log('Refreshing access token')
     if (!refreshToken) {
         logout()
         throw new Error('No refresh token available')
@@ -44,9 +42,8 @@ export const refreshAccessToken = async () => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 'refresh': refreshToken }),
+        body: JSON.stringify({ refresh: refreshToken }),
     })
-
 
     if (!response.ok) {
         logout()

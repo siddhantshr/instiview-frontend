@@ -9,8 +9,6 @@ import type { EventData } from '../EventsPage/types'
 import { fetchEventsHelper } from '../../helpers/getEvents'
 
 const MainScreen = () => {
-    const [inputValue, setInputValue] = useState('')
-    const [_searchTerm, setSearchTerm] = useState('')
     const username = localStorage.getItem('username') || 'User'
     const [upcomingEvents, setUpcomingEvents] = useState<EventData[]>([])
     const [pastEvents, setPastEvents] = useState<EventData[]>([])
@@ -21,7 +19,6 @@ const MainScreen = () => {
         const fetchEvents = async () => {
             try {
                 await fetchEventsHelper(true).then((events) => {
-                    console.log(events)
                     setUpcomingEvents(events.slice(0, 3))
                 })
                 await fetchEventsHelper(false).then((events) => {
@@ -30,7 +27,6 @@ const MainScreen = () => {
             } catch (_error) {
                 setError('Could not load events')
             } finally {
-                console.log(upcomingEvents, pastEvents)
                 setLoading(false)
             }
         }

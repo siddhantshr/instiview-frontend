@@ -58,7 +58,10 @@ const NavMainScreen = () => {
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="/eventspagecurrent">
+                                <a
+                                    className="nav-link"
+                                    href="/eventspagecurrent"
+                                >
                                     Rate Events
                                 </a>
                             </li>

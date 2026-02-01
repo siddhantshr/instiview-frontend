@@ -3,8 +3,8 @@ import type { ChangeEvent } from 'react'
 type Props = {
     title: string
     description: string
-    setTitle: (val: string) => void
-    setDescription: (val: string) => void
+    setTitle: (_val: string) => void
+    setDescription: (_val: string) => void
     // later we can add image setter here too
 }
 
@@ -105,5 +105,3 @@ const BasicEventDetails = ({
 }
 
 export default BasicEventDetails
-
-

@@ -3,7 +3,7 @@ import type { EventData } from '../types/eventData'
 
 export const fetchEventsHelper = async (upcoming: boolean) => {
     const res = await apiFetch('events/')
-    
+
     if (res.ok) {
         const data = await res.json()
         const eventKey = upcoming ? 'upcoming' : 'past'
@@ -25,7 +25,7 @@ export const fetchEventsHelper = async (upcoming: boolean) => {
                 location: event.location,
                 rating: event.rating || 0,
                 reviewCount: event.reviewCount || 0,
-                description: event.content
+                description: event.content,
             })
         }
 
