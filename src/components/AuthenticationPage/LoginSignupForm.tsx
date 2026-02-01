@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import googleIcon from '../../assets/google.svg'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { ChangeEvent } from 'react'
+import { signupUser, loginUser } from '../../helpers/loginSignup'
+import { setTokens } from '../../utils/tokens'
 
 interface Props {
     isSignup?: boolean
     switchMode: () => void
 }
 const LoginSignupForm = ({ isSignup, switchMode }: Props) => {
+    const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false)
-    const [formData, setFormData] = useState({ email: '', password: '' })
+    const [formData, setFormData] = useState({ username: '', password: '' })
 
     const switchPasswordVisibility = () => {
         setShowPassword(!showPassword)
@@ -19,27 +22,67 @@ const LoginSignupForm = ({ isSignup, switchMode }: Props) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
+    const handleSubmit = async () => {
+        if (formData.username === '' || formData.password === '') {
+            alert('Please fill in all fields')
+            return
+        }
+        if (isSignup) {
+            const response = await signupUser(
+                formData.username,
+                formData.password,
+            )
+
+            if (response.ok) {
+                response.json().then((data) => {
+                    setTokens(data.access, data.refresh, formData.username)
+                    navigate('/mainscreen')
+                })
+            } else {
+                alert('Signup failed. Please try a different username.')
+            }
+        } else {
+            const response = await loginUser(
+                formData.username,
+                formData.password,
+            )
+
+            if (response.ok) {
+                response.json().then((data) => {
+                    setTokens(data.access, data.refresh, formData.username)
+
+                    navigate('/mainscreen')
+                })
+            } else {
+                alert('Login failed. Please check your credentials.')
+            }
+        }
+    }
+
     return (
         <div className="container">
             <div className="row justify-content-center">
                 <div className="col-11 col-md-4 col-lg-3 text-start">
                     <form
-                        onSubmit={(e) => e.preventDefault()}
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                            handleSubmit()
+                        }}
                         style={{ maxWidth: '349px' }}
                     >
-                        {/* Email Field */}
+                        {/* username Field */}
                         <div className="mb-2">
                             <label
                                 className="form-label mb-0"
                                 style={{ color: '#B2B6C7', fontSize: '20px' }}
                             >
-                                Enter Email
+                                Enter username
                             </label>
                             <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
+                                type="username"
+                                id="username"
+                                name="username"
+                                value={formData.username}
                                 onChange={handleChange}
                                 className="form-control rounded-pill"
                                 style={{ backgroundColor: '#B2B6C780' }}
@@ -104,7 +147,7 @@ const LoginSignupForm = ({ isSignup, switchMode }: Props) => {
                                 <div>
                                     {!isSignup && (
                                         <a
-                                            href="/forgot-password"
+                                            href="#"
                                             className="text-decoration-none"
                                             style={{
                                                 color: '#7C8194',
@@ -133,15 +176,16 @@ const LoginSignupForm = ({ isSignup, switchMode }: Props) => {
                                     height: '42px',
                                 }}
                             >
-                                <Link
-                                    to="/mainscreen"
+                                <div
                                     style={{
                                         textDecoration: 'none',
                                         color: 'white',
                                     }}
+                                    onClick={handleSubmit}
+                                    role="button"
                                 >
                                     {isSignup ? 'Sign Up' : 'Login'}
-                                </Link>
+                                </div>
                             </button>
                         </div>
 

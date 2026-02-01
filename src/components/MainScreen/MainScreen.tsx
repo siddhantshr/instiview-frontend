@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import NavMainScreen from './NavMainScreen'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './MainScreen.module.css'
 import IITBlogo from '../../assets/a6371bb1bc5c10af6705a1160e2316543b265585.png'
 import ProfileButton from '../../assets/3ca8ab14a39dc09cb18dd60e3cae4e2429071635.png'
 import EventCardMain from '../MainScreen/EventCardsMain'
 import type { EventData } from '../EventsPage/types'
 import { fetchEventsHelper } from '../../helpers/getEvents'
+import { logout } from '../../services/auth'
 
 const MainScreen = () => {
+    const navigate = useNavigate()
     const username = localStorage.getItem('username') || 'User'
     const [upcomingEvents, setUpcomingEvents] = useState<EventData[]>([])
     const [pastEvents, setPastEvents] = useState<EventData[]>([])
@@ -105,10 +107,14 @@ const MainScreen = () => {
                         border: '1px #7684FF solid',
                         textDecoration: 'none',
                     }}
+                    onClick={(_e) => {
+                        logout()
+                        navigate('/')
+                    }}
                 >
                     <img src={ProfileButton} alt="" width={25} height={25} />
                     <div>
-                        Logged in as &gt;
+                        Click to logout &gt;
                         <span
                             style={{
                                 fontFamily: 'Manrope, sans-serif',
