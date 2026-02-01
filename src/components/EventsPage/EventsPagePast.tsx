@@ -1,96 +1,92 @@
 import type { EventData } from './types'
 import EventList from './EventList'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import EventsHeader from './EventsPageHeader'
 import EventDetails from './EventDetails'
-
-// Will get rid if this later
-const MOCK_EVENTS: EventData[] = [
-    {
-        id: 1,
-        title: 'Airshow 2026',
-        organizer: 'Aeromodelling Club',
-        image: '',
-        date: '26 Jan',
-        time: '5:00 PM',
-        location: 'LA 202',
-        rating: 4.8,
-        reviewCount: 120,
-        description:
-            'Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text ',
-    },
-    {
-        id: 1,
-        title: 'Airshow 2027',
-        organizer: 'Aeromodelling Club',
-        image: '',
-        date: '26 Jan',
-        time: '5:00 PM',
-        location: 'LA 202',
-        rating: 4.8,
-        reviewCount: 120,
-        description:
-            'Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text ',
-    },
-    {
-        id: 1,
-        title: 'Airshow 2028',
-        organizer: 'Aeromodelling Club',
-        image: '',
-        date: '26 Jan',
-        time: '5:00 PM',
-        location: 'LA 202',
-        rating: 4.8,
-        reviewCount: 120,
-        description:
-            'Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text ',
-    },
-    {
-        id: 1,
-        title: 'Airshow 2026',
-        organizer: 'Aeromodelling Club',
-        image: '',
-        date: '26 Jan',
-        time: '5:00 PM',
-        location: 'LA 202',
-        rating: 4.8,
-        reviewCount: 120,
-        description:
-            'Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text ',
-    },
-    {
-        id: 1,
-        title: 'Airshow 2026',
-        organizer: 'Aeromodelling Club',
-        image: '',
-        date: '26 Jan',
-        time: '5:00 PM',
-        location: 'LA 202',
-        rating: 4.8,
-        reviewCount: 120,
-        description:
-            'Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text ',
-    },
-    {
-        id: 1,
-        title: 'Airshow 2026',
-        organizer: 'Aeromodelling Club',
-        image: '',
-        date: '26 Jan',
-        time: '5:00 PM',
-        location: 'LA 202',
-        rating: 4.8,
-        reviewCount: 120,
-        description:
-            'Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text Random Text ',
-    },
-]
+import { apiFetch } from '../../services/api'
+import { useSearchParams } from 'react-router-dom'
 
 const EventsPagePast = () => {
-    const [events, _setEvents] = useState<EventData[]>(MOCK_EVENTS)
-    const [selectedEvent, setSelectedEvent] = useState<EventData>(
-        MOCK_EVENTS[0],
-    )
+    const [searchParams] = useSearchParams()
+    const id = searchParams.get('id')
+
+    const [events, setEvents] = useState<EventData[]>([])
+    const [loading, setLoading] = useState(true)
+    const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
+    const [error, setError] = useState<string | null>(null)
+
+    // use RequestInit to fetch from api
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const res = await apiFetch('events/')
+                if (res.ok) {
+                    const data = await res.json()
+                    let eventsList: EventData[] = []
+
+                    for (const event of data['past']) {
+                        const dateObj = new Date(event.startTime)
+                        eventsList.push({
+                            id: event.id,
+                            title: event.title,
+                            organizer: 'IITB',
+                            description: event.content,
+                            image: event.imageURL,
+                            date: dateObj.toLocaleDateString(),
+                            time: dateObj.toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            }),
+                            location: event.location,
+                            rating: event.rating || 0,
+                            reviewCount: event.reviewCount || 0,
+                        })
+                    }
+
+                    setEvents(eventsList)
+                    if (id) {
+                        const event = eventsList.find(
+                            (event: EventData) => event.id === Number(id),
+                        )
+                        if (event) {
+                            setSelectedEvent(event)
+                        }
+                    } else {
+                        setSelectedEvent(eventsList[0])
+                    }
+                } else {
+                    setError('Could not load events')
+                }
+            } catch (_error) {
+                setError('Could not load events')
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchEvents()
+    }, [id])
+
+    if (loading) {
+        return (
+            <p className="text-center mt-5 text-light fs-4">
+                Loading events...
+            </p>
+        )
+    }
+
+    if (error) {
+        return <p className="text-center mt-5 text-danger fs-4">{error}</p>
+    }
+
+    if (events.length === 0) {
+        return (
+            <p className="text-center mt-5 text-light fs-4">
+                No current events available.
+            </p>
+        )
+    }
+
     return (
         <div
             className="container-fluid min-vh-100"
@@ -123,7 +119,7 @@ const EventsPagePast = () => {
                     style={{ backgroundColor: '#0E0F13' }}
                 >
                     {/* Header */}
-                    <EventsHeader />
+                    <EventsHeader upcoming={false} />
 
                     {/* Event Details */}
                     <EventDetails event={selectedEvent} isCurrent={false} />

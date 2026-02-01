@@ -1,8 +1,37 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { apiFetch } from '../../services/api'
 
-const EventsHeader = () => {
+const EventsHeader = ({ upcoming }: { upcoming: boolean }) => {
     const [searchTerm, setSearchTerm] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [_searchParams, setSearchParams] = useSearchParams()
+
+    const handleSearch = async () => {
+        try {
+            const res = await apiFetch(
+                'events/?search=' + encodeURIComponent(searchTerm),
+            )
+            if (res.ok) {
+                const data = await res.json()
+                const eventKey = upcoming ? 'upcoming' : 'past'
+
+                if (data[eventKey].length > 0) {
+                    const firstEventId = data[eventKey][0].id
+                    setSearchParams({ id: firstEventId.toString() })
+                } else {
+                    setError('Could not find event')
+                }
+            } else {
+                setError('Could not find event')
+            }
+        } catch (_error) {
+            setError('Could not find event')
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <div
@@ -39,6 +68,11 @@ const EventsHeader = () => {
                             color: 'white',
                             cursor: 'text',
                         }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSearch()
+                            }
+                        }}
                     ></input>
                     <button
                         className="btn btn-primary fw-bold rounded-pill position-absolute top-50 end-0 translate-middle-y "
@@ -51,6 +85,7 @@ const EventsHeader = () => {
                             marginRight: '15px',
                             color: '#EDEEF3',
                         }}
+                        onClick={handleSearch}
                     >
                         Search
                     </button>
@@ -84,13 +119,14 @@ const EventsHeader = () => {
                         </button>
                     ))}
                 </div>
+                <div className="text-center mt-3 text-white">
+                    {loading ? 'Loading...' : null}
+                </div>
+                <div className="text-danger">{error ? error : null}</div>
             </div>
 
             {/* Home */}
-            <div
-                className="text-end"
-                style={{ paddingLeft: '100px', paddingRight: '20px' }}
-            >
+            <div style={{ paddingLeft: '100px', paddingRight: '20px' }}>
                 <Link
                     to="/"
                     className="text-white-50 text-decoration-none small hover-white "

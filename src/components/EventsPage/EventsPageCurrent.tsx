@@ -3,11 +3,12 @@ import EventList from './EventList'
 import { useState, useEffect } from 'react'
 import EventsHeader from './EventsPageHeader'
 import EventDetails from './EventDetails'
-import { useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { apiFetch } from '../../services/api'
 
 const EventsPageCurrent = () => {
-    const { id } = useParams<{ id: string }>()
+    const [searchParams] = useSearchParams()
+    const id = searchParams.get('id')
 
     const [events, setEvents] = useState<EventData[]>([])
     const [loading, setLoading] = useState(true)
@@ -64,7 +65,7 @@ const EventsPageCurrent = () => {
         }
 
         fetchEvents()
-    }, [])
+    }, [id])
 
     if (loading) {
         return (
@@ -118,7 +119,7 @@ const EventsPageCurrent = () => {
                     style={{ backgroundColor: '#0E0F13' }}
                 >
                     {/* Header */}
-                    <EventsHeader />
+                    <EventsHeader upcoming={true} />
 
                     {/* Event Details */}
                     <EventDetails event={selectedEvent} isCurrent={true} />
