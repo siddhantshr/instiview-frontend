@@ -27,6 +27,10 @@ const LoginSignupForm = ({ isSignup, switchMode }: Props) => {
             alert('Please fill in all fields')
             return
         }
+        if (formData.password.length < 8) {
+            alert('Password must be at least 8 characters long')
+            return
+        }
         if (isSignup) {
             const response = await signupUser(
                 formData.username,
